@@ -19,7 +19,7 @@ export default function Home() {
     loading: reqLoading,
   } = useAxios({
     config: {
-      url: `https://www.googleapis.com/youtube/v3/search?key=AIzaSyDNOnpFbcL_7hnD-f1AByhVBIDG64HUNe4&type=video&part=snippet&q=${
+      url: `https://www.googleapis.com/youtube/v3/search?key=AIzaSyB6nvkExWJK_7mVseGePYpiiv2oOnyzhqo&type=video&part=snippet&q=${
         context?.searchValue
       }&maxResults=12${
         nextPageToken != null ? "&pageToken=" + nextPageToken : ""

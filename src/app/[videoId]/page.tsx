@@ -68,7 +68,7 @@ const VideoPage = () => {
   }, [currentVid]);
 
   return (
-    <div className="w-full h-full grid grid-cols-3 gap-x-7 md:px-10 px-2 overflow-y-hidden">
+    <div className="w-full h-full grid grid-cols-3 gap-x-7 md:px-10 px-2 overflow-y-hidden" id="root">
       <div className="lg:col-span-2 col-span-3 space-y-3 ">
         <div className="bg-white w-full aspect-video rounded-xl">
           <iframe
@@ -188,7 +188,7 @@ const VideoPage = () => {
           commentCount={currentVid?.items[0].statistics.likeCount}
         />
       </div>
-      <div className=" col-span-1 ">
+      <div className="col-span-1 h-fit hidden lg:block">
         <SuggestedVids
           vidTitle={currentVid?.items[0].snippet.title}
           channelId={currentChannel?.items[0].id}

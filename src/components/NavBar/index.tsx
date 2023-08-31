@@ -1,10 +1,16 @@
+"use client";
+import { useRouter } from "next/navigation";
 import { Search } from "../Search";
 
 export const NavBar = () => {
+  const router = useRouter();
 
   return (
     <div className="bg-white dark:bg-primary-color z-50 select-none flex items-center fixed top-0 left-0 w-full md:px-10 px-2 py-3 bg-transparent">
-      <div className="whitespace-nowrap md:text-lg text-sm font-bold dark:text-white text-primary-color flex items-center gap-x-2">
+      <div
+        className="whitespace-nowrap md:text-lg text-sm font-bold dark:text-white text-primary-color flex items-center gap-x-2 cursor-pointer"
+        onClick={() => router.push("/")}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="fill-third-color md:w-10 md:h-10 w-7 h-7 "

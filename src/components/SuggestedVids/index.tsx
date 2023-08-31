@@ -1,3 +1,4 @@
+
 "use client";
 import useAxios from "@/Hooks/useAxios";
 import { MiniVideo } from "@/components/MiniVideo";
@@ -47,24 +48,27 @@ export const SuggestedVids = React.memo(
     }, [channelId]);
 
     useEffect(() => {
-      const observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && nextPageToken) {
-          getSuggestedVids();
-        }
-      });
+      const customRoot = document.querySelector("#root");
+      const observer = new IntersectionObserver(
+        (entries) => {
+          console.log(entries[0].isIntersecting);
+
+          if (entries[0].isIntersecting && nextPageToken) {
+            getSuggestedVids();
+          }
+        },
+        { rootMargin: "10px", root: customRoot }
+      );
 
       const target = document.querySelector("#load-trigger");
       if (target) {
         observer.observe(target);
       }
 
-      return () => {
-        observer.disconnect();
-      };
     }, [nextPageToken]);
 
     return (
-      <div className="w-full h-fit flex flex-col gap-y-2">
+      <div className="w-full h-full flex flex-col gap-y-2">
         <div className="flex flex-col gap-y-2">
           {sameVidsList.map(
             (
@@ -93,9 +97,9 @@ export const SuggestedVids = React.memo(
             )
           )}
         </div>
-        <div id="load-trigger" className="h-0.5 mt-1 "></div>
+
         <div
-          className="w-full flex justify-center lg:hidden items-center text-sm font-semibold py-1.5 text-blue-600 border rounded-full dark:border-white/20 border-black/20 cursor-pointer hover:bg-blue-400/30"
+          className="w-full flex justify-center  items-center text-sm font-semibold py-1.5 text-blue-600 border rounded-full dark:border-white/20 border-black/20 cursor-pointer hover:bg-blue-400/30"
           onClick={() => getSuggestedVids()}
         >
           {sugVidsLoading ? (
@@ -104,6 +108,7 @@ export const SuggestedVids = React.memo(
             "Show more"
           )}
         </div>
+        {/* <div className="w-full h-1 bg-white " id="load-trigger"></div> */}
         {sugVidsLoading && (
           <div className="w-full justify-center mb-6 lg:flex hidden">
             <Spinner />

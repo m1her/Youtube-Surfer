@@ -2,6 +2,7 @@
 import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 type MiniVideoProps = {
   thumbnail: string;
@@ -10,6 +11,7 @@ type MiniVideoProps = {
   publishedAt: Date;
   index: number;
   listLength: number;
+  videoLink: string;
 };
 
 export const MiniVideo = ({
@@ -18,11 +20,9 @@ export const MiniVideo = ({
   publishedAt,
   index,
   channelTitle,
+  videoLink,
 }: MiniVideoProps) => {
-  // console.log(
-  //   index / 10 > 1.1 ? index / 10 - Math.floor(index / 10) : index / 10
-  // );
-  // console.log(listLength);
+
 
   return (
     <motion.div
@@ -35,7 +35,7 @@ export const MiniVideo = ({
         duration: 0.2,
       }}
     >
-      <div className="flex items-center space-x-2 h-full">
+      <Link href={videoLink} className="flex items-center space-x-2 h-full">
         <div className="w-40 aspect-video rounded-lg flex-shrink-0 relative">
           <Image
             src={thumbnail}
@@ -60,7 +60,7 @@ export const MiniVideo = ({
               })}
           </div>
         </div>
-      </div>
+      </Link>
     </motion.div>
   );
 };

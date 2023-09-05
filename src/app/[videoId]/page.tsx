@@ -10,8 +10,8 @@ import { useEffect, useState } from "react";
 import numeral from "numeral";
 import { Comments } from "@/components/Comments";
 import { SuggestedVids } from "@/components/SuggestedVids";
-//AIzaSyB6nvkExWJK_7mVseGePYpiiv2oOnyzhqo
-//AIzaSyDNOnpFbcL_7hnD-f1AByhVBIDG64HUNe4
+//AIzaSyCpyIAcpeQT_459S7vsHMy3yY2OVW8AD8Y
+//AIzaSyDGqOTEdYnFBizH-B2OzhSPsI_igEDOQi0
 const VideoPage = () => {
   const params = useParams();
   const [currentVid, setCurrentVid] = useState<any>(null);
@@ -28,7 +28,7 @@ const VideoPage = () => {
     loading: videoLoading,
   } = useAxios({
     config: {
-      url: `https://www.googleapis.com/youtube/v3/videos?id=${params.videoId}&key=AIzaSyDNOnpFbcL_7hnD-f1AByhVBIDG64HUNe4
+      url: `https://www.googleapis.com/youtube/v3/videos?id=${params.videoId}&key=AIzaSyDGqOTEdYnFBizH-B2OzhSPsI_igEDOQi0
       &part=snippet,contentDetails,statistics,status`,
       method: "GET",
     },
@@ -45,7 +45,7 @@ const VideoPage = () => {
     loading: channelLoading,
   } = useAxios({
     config: {
-      url: `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet&fields=items&id=${currentVid?.items[0].snippet.channelId}&key=AIzaSyDNOnpFbcL_7hnD-f1AByhVBIDG64HUNe4`,
+      url: `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet&fields=items&id=${currentVid?.items[0].snippet.channelId}&key=AIzaSyDGqOTEdYnFBizH-B2OzhSPsI_igEDOQi0`,
       method: "GET",
     },
     onSuccess: (data: { items: any; nextPageToken: string }) => {
@@ -177,16 +177,17 @@ const VideoPage = () => {
             </div>
           </div>
         </div>
-        <div className="lg:hidden block">
+       
+        <Comments
+          vidId={params.videoId}
+          commentCount={currentVid?.items[0].statistics.likeCount}
+        />
+         <div className="lg:hidden block">
           <SuggestedVids
             vidTitle={currentVid?.items[0].snippet.title}
             channelId={currentChannel?.items[0].id}
           />
         </div>
-        <Comments
-          vidId={params.videoId}
-          commentCount={currentVid?.items[0].statistics.likeCount}
-        />
       </div>
       <div className="col-span-1 h-fit hidden lg:block">
         <SuggestedVids

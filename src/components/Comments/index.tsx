@@ -24,7 +24,7 @@ export const Comments = ({ vidId, commentCount }: CommentsProps) => {
     loading: commentsLoading,
   } = useAxios({
     config: {
-      url: `https://www.googleapis.com/youtube/v3/commentThreads?key=AIzaSyDNOnpFbcL_7hnD-f1AByhVBIDG64HUNe4&videoId=${vidId}&part=snippet&maxResults=10${
+      url: `https://www.googleapis.com/youtube/v3/commentThreads?key=AIzaSyDGqOTEdYnFBizH-B2OzhSPsI_igEDOQi0&videoId=${vidId}&part=snippet&maxResults=10${
         nextPageToken != null ? "&pageToken=" + nextPageToken : ""
       }`,
       method: "GET",
@@ -116,9 +116,23 @@ export const Comments = ({ vidId, commentCount }: CommentsProps) => {
         </div>
       ))}
 
-      <div id="load-more-trigger" style={{ height: "1px" }}></div>
+      <div
+        className="w-full justify-center lg:hidden flex items-center text-sm font-semibold py-1.5 text-blue-600 border rounded-full dark:border-white/20 border-black/20 cursor-pointer hover:bg-blue-400/30"
+        onClick={() => getComments()}
+      >
+        {commentsLoading ? (
+          <Spinner color="fill-blue-600" size="w-5 h-5" />
+        ) : (
+          "Show more"
+        )}
+      </div>
+      <div
+        id="load-more-trigger"
+        className="lg:block hidden"
+        style={{ height: "1px" }}
+      ></div>
       {commentsLoading && (
-        <div className="w-full flex justify-center mb-6">
+        <div className="w-full justify-center mb-6 lg:flex hidden">
           <Spinner />
         </div>
       )}

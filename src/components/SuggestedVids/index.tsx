@@ -1,12 +1,12 @@
-
 "use client";
 import useAxios from "@/Hooks/useAxios";
 import { MiniVideo } from "@/components/MiniVideo";
 import { Spinner } from "@/components/Spinner";
 import React, { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 
-//AIzaSyB6nvkExWJK_7mVseGePYpiiv2oOnyzhqo
-//AIzaSyDNOnpFbcL_7hnD-f1AByhVBIDG64HUNe4
+//AIzaSyCpyIAcpeQT_459S7vsHMy3yY2OVW8AD8Y
+//AIzaSyDGqOTEdYnFBizH-B2OzhSPsI_igEDOQi0
 
 type SuggestedVidsProps = {
   vidTitle: string;
@@ -16,6 +16,7 @@ type SuggestedVidsProps = {
 export const SuggestedVids = React.memo(
   ({ vidTitle, channelId }: SuggestedVidsProps) => {
     const [sameVidsList, setSameVidsList] = useState<any>([]);
+    const [hasMore, setHasMore] = useState<boolean>(true);
     const [nextPageToken, setNextPageToken] = useState<string | null>(null);
     const {
       fetchData: getSuggestedVids,
@@ -23,7 +24,7 @@ export const SuggestedVids = React.memo(
       loading: sugVidsLoading,
     } = useAxios({
       config: {
-        url: `https://www.googleapis.com/youtube/v3/search?&type=video&channelId=${channelId}&part=snippet&key=AIzaSyDNOnpFbcL_7hnD-f1AByhVBIDG64HUNe4&q=${vidTitle}&maxResults=12${
+        url: `https://www.googleapis.com/youtube/v3/search?&type=video&channelId=${channelId}&part=snippet&key=AIzaSyDGqOTEdYnFBizH-B2OzhSPsI_igEDOQi0&q=${vidTitle}&maxResults=12${
           nextPageToken != null ? "&pageToken=" + nextPageToken : ""
         }`,
         method: "GET",
@@ -33,10 +34,14 @@ export const SuggestedVids = React.memo(
           index: index,
           item: item,
         }));
+        console.log(data);
+
+        setHasMore(true);
         setSameVidsList((prev: any) => [...prev, ...newItems]);
         setNextPageToken(data.nextPageToken);
       },
       onError: () => {
+        setHasMore(false);
         console.log(sugVidError);
       },
     });
@@ -47,73 +52,52 @@ export const SuggestedVids = React.memo(
       }
     }, [channelId]);
 
-    useEffect(() => {
-      const customRoot = document.querySelector("#root");
-      const observer = new IntersectionObserver(
-        (entries) => {
-          console.log(entries[0].isIntersecting);
-
-          if (entries[0].isIntersecting && nextPageToken) {
-            getSuggestedVids();
-          }
-        },
-        { rootMargin: "10px", root: customRoot }
-      );
-
-      const target = document.querySelector("#load-trigger");
-      if (target) {
-        observer.observe(target);
-      }
-
-    }, [nextPageToken]);
-
     return (
       <div className="w-full h-full flex flex-col gap-y-2">
         <div className="flex flex-col gap-y-2">
-          {sameVidsList.map(
-            (
-              item: {
-                index: number;
+          <InfiniteScroll
+            className="gap-y-2 flex flex-col"
+            next={getSuggestedVids}
+            hasMore={hasMore}
+            loader={
+              <div className="flex w-full justify-center">
+                <Spinner />
+              </div>
+            }
+            dataLength={sameVidsList.length}
+          >
+            {sameVidsList.map(
+              (
                 item: {
-                  snippet: {
-                    title: string;
-                    thumbnails: { high: { url: string } };
-                    channelTitle: string;
-                    publishedAt: Date;
+                  index: number;
+                  item: {
+                    id: { videoId: string };
+                    snippet: {
+                      title: string;
+                      thumbnails: { high: { url: string } };
+                      channelTitle: string;
+                      publishedAt: Date;
+                    };
                   };
-                };
-              },
-              index: number
-            ) => (
-              <MiniVideo
-                key={index}
-                index={item.index}
-                thumbnail={item.item.snippet.thumbnails.high.url}
-                channelTitle={item.item.snippet.channelTitle}
-                title={item.item.snippet.title}
-                publishedAt={item.item.snippet.publishedAt}
-                listLength={sameVidsList.length}
-              />
-            )
-          )}
+                },
+                index: number
+              ) => (
+                <MiniVideo
+                  key={index}
+                  index={item.index}
+                  thumbnail={item.item.snippet.thumbnails.high.url}
+                  channelTitle={item.item.snippet.channelTitle}
+                  title={item.item.snippet.title}
+                  publishedAt={item.item.snippet.publishedAt}
+                  listLength={sameVidsList.length}
+                  videoLink={item.item.id.videoId}
+                />
+              )
+            )}
+          </InfiniteScroll>
         </div>
 
-        <div
-          className="w-full flex justify-center  items-center text-sm font-semibold py-1.5 text-blue-600 border rounded-full dark:border-white/20 border-black/20 cursor-pointer hover:bg-blue-400/30"
-          onClick={() => getSuggestedVids()}
-        >
-          {sugVidsLoading ? (
-            <Spinner color="fill-blue-600" size="w-5 h-5" />
-          ) : (
-            "Show more"
-          )}
-        </div>
         {/* <div className="w-full h-1 bg-white " id="load-trigger"></div> */}
-        {sugVidsLoading && (
-          <div className="w-full justify-center mb-6 lg:flex hidden">
-            <Spinner />
-          </div>
-        )}
       </div>
     );
   }
